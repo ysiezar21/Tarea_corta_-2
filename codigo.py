@@ -6,6 +6,18 @@ app = Flask(__name__)
 PROB_CRUCE = 0.8  # Probabilidad de cruce
 PROB_MUTACION = 0.1 # Probabilidad de mutacion
 
+
+# Entradas: 
+#   L = Numero limite de la suma de cada individuo
+#   tamano_poblacion = Cantidad de individuos que debe haber en cada generación
+#   num_generaciones = Numero de generaciones que debe generar el algoritmo 
+# Salidas:
+#   lista_generaciones = Lista que contiene los individuos seleccionados como mejores de cada generacion.
+#   [mejor_final, generacion_mejor_final] = Arreglo que contiene el mejor individuo encontrado durante el algoritmo y su generacion.
+# Restricciones:
+#   L debe ser mayor o igual a 1
+#   El tamaño de la poblacion debe ser mayor o igual a 10
+#   El minimo de generaciones es de 25
 def algoritmo_genetico(L, tamano_poblacion, num_generaciones):
     generacion = generar_poblacion_inicial(L, tamano_poblacion)
     lista_generaciones = []
@@ -49,7 +61,13 @@ def algoritmo_genetico(L, tamano_poblacion, num_generaciones):
 
     return lista_generaciones, [mejor_final, generacion_mejor_final]
         
-        
+# Entradas:
+#   generacion = Lista de individuos de la generación actual
+#   L = Numero limite de la suma
+# Salidas:
+#   res = Mejor individuo encontrado en la generación
+# Restricciones:
+#   La generación no debe estar vacía
 def buscar_mejor(generacion, L):
     res = [0]
     for individuo in generacion:
@@ -66,6 +84,14 @@ def buscar_mejor(generacion, L):
                 res = individuo
     return res
 
+# Entradas:
+#   L = Numero limite de la suma y de elementos por individuo
+#   tamano_poblacion = Cantidad de individuos a generar
+# Salidas:
+#   poblacion = Lista de individuos generados aleatoriamente
+# Restricciones:
+#   L debe ser mayor o igual a 1
+#   tamano_poblacion debe ser mayor o igual a 10
 def generar_poblacion_inicial(L, tamano_poblacion):
     poblacion = []
     
@@ -78,6 +104,15 @@ def generar_poblacion_inicial(L, tamano_poblacion):
     
     return poblacion
 
+# Entradas:
+#   poblacion = Lista de individuos actual
+#   L = Numero limite de la suma
+#   tamano_poblacion = Tamaño objetivo de la población
+# Salidas:
+#   poblacion = Población ajustada al tamaño deseado
+# Restricciones:
+#   L debe ser mayor o igual a 1
+#   tamano_poblacion debe ser mayor o igual a 10
 def completar_poblacion(poblacion, L, tamano_poblacion):
     largo = len(poblacion)
 
@@ -94,13 +129,26 @@ def completar_poblacion(poblacion, L, tamano_poblacion):
     
     return poblacion
 
+# Entradas:
+#   individuo = Lista de números que representa un individuo
+#   L = Numero limite de la suma
+# Salidas:
+#   Valor de adaptabilidad del individuo (suma si cumple restricción, 0 en caso contrario)
+# Restricciones:
+#   L debe ser mayor o igual a 1
 def adaptabilidad(individuo, L):
     suma = sumar(individuo)
     if suma <= L and suma > 0:
         return suma
     else:
         return 0
-    
+
+# Entradas:
+#   poblacion = Lista de tuplas [individuo, fitness]
+# Salidas:
+#   seleccionados = Lista de individuos seleccionados con fitness mayor a 0
+# Restricciones:
+#   Cada elemento de población debe ser una tupla [individuo, fitness]
 def seleccion(poblacion):
     seleccionados = []
     for i in poblacion:
@@ -109,6 +157,13 @@ def seleccion(poblacion):
         
     return seleccionados
 
+# Entradas:
+#   poblacion = Lista de individuos padres
+# Salidas:
+#   poblacion_cruzada = Lista de individuos hijos resultantes del cruce
+# Restricciones:
+#   La población no debe estar vacía
+#   PROB_CRUCE debe estar definida globalmente
 def realizar_cruce(poblacion):
     poblacion_cruzada = []
     i = 0
@@ -126,6 +181,14 @@ def realizar_cruce(poblacion):
             poblacion_cruzada += [padre1[:], padre2[:]]
     return poblacion_cruzada
     
+# Entradas:
+#   individuo = Lista de números que representa un individuo
+#   L = Numero limite de la suma
+# Salidas:
+#   mutado = Individuo resultante después de aplicar mutación
+# Restricciones:
+#   L debe ser mayor o igual a 1
+#   PROB_MUTACION debe estar definida globalmente
 def mutacion(individuo, L):
     mutado = individuo[:]
     for i in range(len(individuo)):
@@ -139,12 +202,19 @@ def mutacion(individuo, L):
         mutado = mutado[:-1]
     return mutado
 
+# Entradas:
+#   lista = Lista de números a sumar
+# Salidas:
+#   res = Suma total de los elementos de la lista
+# Restricciones:
+#   Ninguna
 def sumar(lista):
     res = 0
     for x in lista:
         res += x
     return res 
 
+# Rutas a la parte grafica y ejecucion del sistema.
 @app.route('/')
 def index():
     return render_template('formulario.html')
