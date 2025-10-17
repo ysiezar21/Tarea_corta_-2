@@ -27,18 +27,18 @@ def algoritmo_genetico(L, tamano_poblacion, num_generaciones):
     for x in range(num_generaciones):
         seleccionados = []
         poblacion_con_fitness = []
-        for individuo in generacion:
+        for individuo in generacion: #Añade cada individuo con su fitness
             adapt = adaptabilidad(individuo, L)
             poblacion_con_fitness += [[individuo, adapt]]
 
         seleccionados = seleccion(poblacion_con_fitness)
 
-        lista_generaciones.append([ind[:] for ind in seleccionados])
+        lista_generaciones.append([ind[:] for ind in seleccionados]) #Añade una copia de la lista de seleccionados, para evitar cambios imprevistos
         
         poblacion_cruzada = realizar_cruce(seleccionados)
 
         poblacion_mutada = []
-        for individuo in poblacion_cruzada:
+        for individuo in poblacion_cruzada: #Intenta mutar cada individuo
             poblacion_mutada += [mutacion(individuo, L)]
         
         generacion = poblacion_mutada
@@ -47,6 +47,7 @@ def algoritmo_genetico(L, tamano_poblacion, num_generaciones):
         mejor_generacion = buscar_mejor(generacion, L)
         suma = sumar(mejor_generacion)
 
+        #Se cambia el valor del mejor individuo historico
         if sumar(mejor_final) > L:
             mejor_final = mejor_generacion
             generacion_mejor_final = x + 1
@@ -72,6 +73,7 @@ def buscar_mejor(generacion, L):
     res = [0]
     for individuo in generacion:
         suma = sumar(individuo)
+        #Busca al individuo mas corto y que su suma se acerce a L
         if suma <= L:
             if suma > sumar(res):
                 res = individuo
@@ -117,7 +119,7 @@ def completar_poblacion(poblacion, L, tamano_poblacion):
     largo = len(poblacion)
 
     if largo < tamano_poblacion:
-        for i in range(largo, tamano_poblacion):
+        for i in range(largo, tamano_poblacion): #Añade individuos aleatorios para completar la poblacion
             longitud = random.randint(1, L)
             individuo = []
             for _ in range(longitud):
@@ -152,7 +154,7 @@ def adaptabilidad(individuo, L):
 def seleccion(poblacion):
     seleccionados = []
     for i in poblacion:
-        if i[1] > 0 and i[0] not in seleccionados:
+        if i[1] > 0 and i[0] not in seleccionados: #Añade individuos con adaptabilidad mayor a 0 sin repetirlos
             seleccionados = seleccionados + [i[0]]
         
     return seleccionados
@@ -172,10 +174,10 @@ def realizar_cruce(poblacion):
         padre2 = poblacion[i]
         if len(padre1) == 1 or len(padre2) == 1:
             poblacion_cruzada += [padre1[:], padre2[:]]
-        elif random.random() < PROB_CRUCE:
-            punto = random.randint(1, min(len(padre1), len(padre2)) - 1)
-            hijo1 = padre1[:punto] + padre2[punto:]
-            hijo2 = padre2[:punto] + padre1[punto:]
+        elif random.random() < PROB_CRUCE: # Si se cumple se realiza el cruce
+            punto = random.randint(1, min(len(padre1), len(padre2)) - 1) #Elige el punto de cruce
+            hijo1 = padre1[:punto] + padre2[punto:] #hijo1 será la mitad izquierda de padre1 y la derecha del padre2
+            hijo2 = padre2[:punto] + padre1[punto:] #hijo2 será la mitad izquierda de padre2 y la derecha del padre1
             poblacion_cruzada += [hijo1, hijo2]
         else:
             poblacion_cruzada += [padre1[:], padre2[:]]
@@ -192,8 +194,9 @@ def realizar_cruce(poblacion):
 def mutacion(individuo, L):
     mutado = individuo[:]
     for i in range(len(individuo)):
-        if random.random() < PROB_MUTACION:
+        if random.random() < PROB_MUTACION: #Si se cumple se realiza la mutacion
             num = random.randint(1, L)
+            #Se elimina o se añade un numero random al individuo
             if num in mutado:
                 mutado.remove(num)
             else:
@@ -232,3 +235,4 @@ def ejecutar_algoritmo():
     
 if __name__ == '__main__':
     app.run(debug=True)
+
