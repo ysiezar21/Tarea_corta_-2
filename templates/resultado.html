@@ -1,18 +1,146 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Población Generada</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados del Algoritmo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border: 1px solid #ddd;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+
+        h3 {
+            font-size: 16px;
+            margin: 10px 0;
+            color: #666;
+        }
+
+        .parametros {
+            background-color: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+        }
+
+        .parametros p {
+            margin: 5px 0;
+        }
+
+        .generacion {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-left: 3px solid #28a745;
+        }
+
+        .generacion h3 {
+            margin-top: 0;
+            color: #28a745;
+        }
+
+        .individuos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .individuo {
+            background-color: white;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .mejor-resultado {
+            background-color: #fff3cd;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .mejor-resultado h3 {
+            margin: 5px 0;
+            color: #856404;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Población Generada</h1>
-    <p><strong>L:</strong> {{ L }}</p>
-    <p><strong>Tamaño de población:</strong> {{ tamano_poblacion }}</p>
-    <p><strong>Generaciones:</strong> {{ num_generaciones }}</p>
-    
-    <h2>Individuos:</h2>
-    {{ poblacion }}
-    
-    <br><br>
-    <a href="/">Generar nueva población</a>
+    <div class="container">
+        <h1>Resultados del Algoritmo</h1>
+        
+        <div class="parametros">
+            <p><strong>L:</strong> {{ L }}</p>
+            <p><strong>Tamaño de población:</strong> {{ tamano_poblacion }}</p>
+            <p><strong>Número de generaciones:</strong> {{ num_generaciones }}</p>
+        </div>
+        
+        <h2>Generaciones</h2>
+        
+        {% for i in range(0, historico|length, 1) %}
+            {% set seleccionados = historico[i] %}
+            <div class="generacion">
+                <h3>Generación {{ i+1 }}</h3>
+                <p><strong>Individuos seleccionados:</strong></p>
+                <div class="individuos">
+                    {% for individuo in seleccionados %}
+                        {% if individuo != [] %}
+                            <div class="individuo">
+                                {{ individuo }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+
+        <h2>Mejor Individuo Histórico</h2>
+        <div class="mejor-resultado">
+            <h3>Individuo: {{ mejor_final[0] }}</h3>
+            <h3>Encontrado en: Generación {{ mejor_final[1] }}</h3>
+        </div>
+
+        <a href="/">Generar nuevos resultados</a>
+    </div>
 </body>
 </html>
